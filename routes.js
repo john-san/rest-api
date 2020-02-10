@@ -4,13 +4,60 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const bcryptjs = require('bcryptjs');
 const auth = require('basic-auth');
+const { sequelize, Course, User } = require('./models');
+
+
 
 // Construct a router instance.
 const router = express.Router();
 
-// GET /api/users 200 - Returns the currently authenticated user
-router.get('/users', (req, res) => {
+const authenticateUser = async (req, res, next) => {
+  let message = null;
 
+  // Get the user's credentials from the Authorization header.
+  const credentials = auth(req);
+
+  if (credentials) {
+    // Look for a user whose `emailAddress` matches the credentials `name` property. might need await
+    const user = await User.findOne({ where: { emailAddress: credentials.name } });
+
+    
+    // users.find(u => u.username === credentials.name);
+
+    if (user) {
+      const authenticated = bcryptjs
+        .compareSync(credentials.pass, user.password);
+      if (authenticated) {
+        console.log(`Authentication successful for username: ${user.emailAddress}`);
+
+        // Store the user on the Request object.
+        req.currentUser = user;
+      } else {
+        message = `Authentication failure for username: ${user.emailAddress}`;
+      }
+    } else {
+      message = `User not found for username: ${credentials.name}`;
+    }
+  } else {
+    message = 'Auth header not found';
+  }
+
+  if (message) {
+    console.warn(message);
+    res.status(401).json({ message: 'Access Denied' });
+  } else {
+    next();
+  }
+};
+
+// GET /api/users 200 - Returns the currently authenticated user
+router.get('/users', authenticateUser, (req, res) => {
+  const user = req.currentUser;
+
+  res.json({
+    name: `${user.firstName} ${user.lastName}`,
+    username: user.emailAddress,
+  });
 });
 
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
