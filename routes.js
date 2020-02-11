@@ -6,8 +6,6 @@ const bcryptjs = require('bcryptjs');
 const auth = require('basic-auth');
 const { sequelize, Course, User } = require('./models');
 
-
-
 // Construct a router instance.
 const router = express.Router();
 
@@ -20,9 +18,6 @@ const authenticateUser = async (req, res, next) => {
   if (credentials) {
     // Look for a user whose `emailAddress` matches the credentials `name` property. might need await
     const user = await User.findOne({ where: { emailAddress: credentials.name } });
-
-    
-    // users.find(u => u.username === credentials.name);
 
     if (user) {
       const authenticated = bcryptjs
@@ -50,6 +45,16 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
+const doesUserExist = async (user) => {
+  const result = await User.findOne({ 
+    where: { 
+      emailAddress: user.emailAddress 
+    } 
+  });
+
+  return result ? true : false;
+}
+
 // GET /api/users 200 - Returns the currently authenticated user
 router.get('/users', authenticateUser, (req, res) => {
   const user = req.currentUser;
@@ -61,8 +66,38 @@ router.get('/users', authenticateUser, (req, res) => {
 });
 
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
-router.post('/users', (req, res) => {
+router.post('/users', [
+  check('firstName')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "firstName"'),
+  check('lastName')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "lastName"'),
+  check('emailAddress')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "emailAddress"'),
+  check('password')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "password"'),
+], async (req, res) => {
+  const errors = validationResult(req);
+  // Return validation errors if they exist
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map(error => error.msg);
+    return res.status(400).json({ errors: errorMessages });
+  }
 
+  const user = req.body;
+  const exists = await doesUserExist(user);
+
+  // if user exists, give error.  Otherwise, create user
+  if (exists) {
+    return res.status(422).json({ error: `A user with the email ${user.emailAddress} already exists.` });
+  } else {
+    user.password = bcryptjs.hashSync(user.password);
+    await User.create(user);
+    return res.status(201).location('/').end();
+  }
 });
 
 // GET /api/courses 200 - Returns a list of courses (including the user that owns each course)
