@@ -12,10 +12,14 @@ const userValidationRules = () => {
       .withMessage('Please provide a value for "lastName"'),
     check('emailAddress')
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('Please provide a value for "emailAddress"'),
+      .withMessage('Please provide a value for "emailAddress"')
+      .isEmail()
+      .withMessage('Please provide a valid email address'),
     check('password')
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('Please provide a value for "password"'),
+      .withMessage('Please provide a value for "password"')
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters long'),
   ];
 }
 

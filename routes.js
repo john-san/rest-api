@@ -22,11 +22,11 @@ router.get('/users', authenticateUser, (req, res) => {
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 router.post('/users', userValidationRules(), validate, asyncHandler(async (req, res) => {
   const user = req.body;
-  const exists = await doesUserExist(user);
+  const exists = await doesUserExist(req.body);
 
   // if user exists, give error.  Otherwise, create user
   if (exists) {
-    return res.status(422).json({ error: `A user with the email ${user.emailAddress} already exists.` });
+    return res.status(409).json({ error: `A user with the email ${user.emailAddress} already exists.` });
   } else {
     user.password = bcryptjs.hashSync(user.password);
     await User.create(user);
@@ -44,7 +44,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
     ]
   });
 
-  return res.status(200).json(courses);
+  return res.json(courses);
 }));
 
 // GET /api/courses/:id 200 - Returns a the course (including the user that owns the course) for the provided course ID
@@ -65,17 +65,16 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
   } else {
     res.status(404).json({ Error: "Course doesn't exist" });
   }
-  
 }));
 
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
 router.post('/courses/', authenticateUser, courseValidationRules(), validate, asyncHandler(async (req, res) => {
   const course = req.body;
   const exists = await doesCourseExist(course);
-
+  
   // if user exists, give error.  Otherwise, create user
   if (exists) {
-    return res.status(422).json({ error: `The course titled "${course.title}" already exists.` });
+    return res.status(409).json({ error: `The course titled "${course.title}" already exists.` });
   } else {
     await Course.create(course);
     return res.status(201).location(`/courses/${course.id}`).end();

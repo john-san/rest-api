@@ -6,6 +6,7 @@ module.exports = (sequelize) => {
   Course.init({
     title: {
       type: Sequelize.STRING,
+      unique: true,
       allowNull: false,
       validate: {
         notNull: {

@@ -8,7 +8,8 @@ function asyncHandler(cb) {
     try {
       await cb(req, res, next)
     } catch (err) {
-      next(err); // Handle general error
+      // Handle general error.  Sequelize errors also passed through here
+      next(err) 
     }
   }
 }

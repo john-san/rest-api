@@ -52,10 +52,16 @@ app.use((err, req, res, next) => {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
 
-  res.status(err.status || 500).json({
-    message: err.message,
-    error: {},
-  });
+  if (err.name === "SequelizeValidationError") {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names
+    const errors = err.errors.map(error => ({[error.path] : error.message}) );
+    res.status(400).json(  { "SequelizeValidationErrors": errors }  );
+  } else {
+    res.status(err.status || 500).json({
+      message: err.message,
+      error: {},
+    });
+  }
 });
 
 // set our port
