@@ -29,8 +29,7 @@ app.use(morgan('dev'));
 })();
 
 
-// TODO setup your api routes here
-// Add routes.
+// api routes
 app.use('/api', routes);
 
 // setup a friendly greeting for the root route
