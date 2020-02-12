@@ -18,7 +18,7 @@ In summary, this project has helped me improve my expertise in REST APIs, data v
 3. Run the command `npm install` to install the project's dependencies.
 4. Run the command `npm run seed` to create the initial database.
 5. Run the command `npm start` to start the app.    
-6. View the project in your browser by going to [`localhost:5000`](http://localhost:5000/)
+6. Add the `RESTAPI.postman_collection.json` collection file to [Postman](https://www.postman.com/) and test each route.
 
 
 **Extra Credit**
