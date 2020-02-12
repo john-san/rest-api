@@ -1,38 +1,28 @@
+### Team Treehouse Full Stack JavaScript Techdegree
 
-# Full Stack JavaScript Techdegree v2 - REST API Project
+## Unit 9 Project: REST API
 
-## Overview of the Provided Project Files
+**Summary:** This is a course manager and REST API built on express.  It uses the Sequelize ORM to interact between two associated models, Users and Courses.
 
-We've supplied the following files for you to use: 
+There are two layers of validation to ensure that data is correctly formatted.  The first validation occurs before a route is processed and is handled by express-validator.  The second validation occurs when the data is inserted into the database and is handled by Sequelize.
 
-* The `seed` folder contains a starting set of data for your database in the form of a JSON file (`data.json`) and a collection of files (`context.js`, `database.js`, and `index.js`) that can be used to create your app's database and populate it with data (we'll explain how to do that below).
-* We've included a `.gitignore` file to ensure that the `node_modules` folder doesn't get pushed to your GitHub repo.
-* The `app.js` file configures Express to serve a simple REST API. We've also configured the `morgan` npm package to log HTTP requests/responses to the console. You'll update this file with the routes for the API. You'll update this file with the routes for the API.
-* The `nodemon.js` file configures the nodemon Node.js module, which we are using to run your REST API.
-* The `package.json` file (and the associated `package-lock.json` file) contain the project's npm configuration, which includes the project's dependencies.
-* The `RESTAPI.postman_collection.json` file is a collection of Postman requests that you can use to test and explore your REST API.
+Users are only able to access specific routes if they are authenticated.  Furthermore, appropriate HTTP status codes are returned upon each action/error.  
 
-## Getting Started
+In summary, this project has helped me improve my expertise in REST APIs, data validation, and user authentication.
 
-To get up and running with this project, run the following commands from the root of the folder that contains this README file.
 
-First, install the project's dependencies using `npm`.
+**How to use**:
 
-```
-npm install
+1. Download the project files and extract the folder to your computer.
+2. Open the terminal/command prompt and change directories to the project directory.
+3. Run the command `npm install` to install the project's dependencies.
+4. Run the command `npm run seed` to create the initial database.
+5. Run the command `npm start` to start the app.    
+6. View the project in your browser by going to [`localhost:5000`](http://localhost:5000/)
 
-```
 
-Second, seed the SQLite database.
+**Extra Credit**
 
-```
-npm run seed
-```
-
-And lastly, start the application.
-
-```
-npm start
-```
-
-To test the Express server, browse to the URL [http://localhost:5000/](http://localhost:5000/).
+1. JS: Added custom email validation to ensure that duplicate emails are not allowed.
+2. JS: Added authentication security so that users can only update/delete their own courses.
+3. JS: Hid unnecessary info from GET routes such as password, createdAt,updatedAt
