@@ -18,8 +18,8 @@ const userValidationRules = () => {
     check('password')
       .exists({ checkNull: true, checkFalsy: true })
       .withMessage('Please provide a value for "password"')
-      .isLength({ min: 6 })
-      .withMessage('Password must be at least 6 characters long'),
+      .isLength({ min: 6, max: 18 })
+      .withMessage('Password must be between 6 and 18 characters'),
   ];
 }
 
@@ -34,9 +34,6 @@ const courseValidationRules = () => {
   ];
 }
 
-
-
-
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -45,7 +42,7 @@ const validate = (req, res, next) => {
   const extractedErrors = [];
   errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }));
 
-  return res.status(422).json({
+  return res.status(400).json({
     errors: extractedErrors
   });
 }

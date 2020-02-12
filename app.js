@@ -28,7 +28,6 @@ app.use(morgan('dev'));
   }
 })();
 
-
 // api routes
 app.use('/api', routes);
 

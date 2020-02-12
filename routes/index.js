@@ -2,21 +2,17 @@
 
 const express = require('express');
 const bcryptjs = require('bcryptjs');
-const { sequelize, Course, User } = require('./models');
-const { asyncHandler, authenticateUser, doesUserExist, doesCourseExist } = require('./helpers/index');
-const { userValidationRules, courseValidationRules, validate } = require('./helpers/validator');
+const { sequelize, Course, User } = require('../models');
+const { asyncHandler, authenticateUser, doesUserExist, doesCourseExist } = require('../helpers/index');
+const { userValidationRules, courseValidationRules, validate } = require('../helpers/validator');
 
 // Construct a router instance.
 const router = express.Router();
 
 // GET /api/users 200 - Returns the currently authenticated user
 router.get('/users', authenticateUser, (req, res) => {
-  const user = req.currentUser;
-
-  res.json({
-    name: `${user.firstName} ${user.lastName}`,
-    username: user.emailAddress,
-  });
+  const { id, firstName, lastName, emailAddress } = req.currentUser;
+  res.json({ id, firstName, lastName, emailAddress });
 });
 
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
@@ -24,7 +20,7 @@ router.post('/users', userValidationRules(), validate, asyncHandler(async (req, 
   const user = req.body;
   const exists = await doesUserExist(req.body);
 
-  // if user exists, give error.  Otherwise, create user
+  // if user exists, give error.  otherwise, create user
   if (exists) {
     return res.status(409).json({ error: `A user with the email ${user.emailAddress} already exists.` });
   } else {
@@ -37,9 +33,15 @@ router.post('/users', userValidationRules(), validate, asyncHandler(async (req, 
 // GET /api/courses 200 - Returns a list of courses (including the user that owns each course)
 router.get('/courses', asyncHandler(async (req, res) => {
   const courses = await Course.findAll({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    },
     include: [
       {
-        model: User
+        model: User,
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt']
+        }
       }
     ]
   });
@@ -53,9 +55,15 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
     where: { 
       id: req.params.id 
     },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    },
     include: [
       {
-        model: User
+        model: User,
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt']
+        }
       }
     ]
   });
@@ -72,12 +80,12 @@ router.post('/courses/', authenticateUser, courseValidationRules(), validate, as
   const course = req.body;
   const exists = await doesCourseExist(course);
   
-  // if user exists, give error.  Otherwise, create user
+  // if course exists, give error.  otherwise, create user
   if (exists) {
     return res.status(409).json({ error: `The course titled "${course.title}" already exists.` });
   } else {
-    await Course.create(course);
-    return res.status(201).location(`/courses/${course.id}`).end();
+    const newCourse = await Course.create(course);
+    return res.status(201).location(`/courses/${newCourse.id}`).end();
   }
 }));
 
@@ -88,15 +96,18 @@ router.put('/courses/:id', authenticateUser, courseValidationRules(), validate, 
       id: req.params.id 
     }
   });
-
   
   if (course) {
-    await course.update({
-      title: req.body.title,
-      description: req.body.description
-    }, { fields: ['title', 'description'] });
-  
-    res.status(204).end();
+    const idMatch = req.currentUser.id == course.userId;
+    if (idMatch) {
+      await course.update({
+        title: req.body.title,
+        description: req.body.description
+      }, { fields: ['title', 'description'] });
+      res.status(204).end();
+    } else {
+      res.status(403).json({ error: "You do not have permission to update this course." });
+    }
   } else {
     res.status(404).json({ error: "Course doesn't exist"});
   }
@@ -111,8 +122,13 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
   });
 
   if (course) {
-    await course.destroy();
-    res.status(204).end();
+    const idMatch = req.currentUser.id == course.userId;
+    if (idMatch) {
+      await course.destroy();
+      res.status(204).end();
+    } else {
+      res.status(403).json({ error: "You do not have permission to delete this course." });
+    }
   } else {
     res.status(404).json({ error: "Course doesn't exist"});
   }

@@ -6,7 +6,6 @@ module.exports = (sequelize) => {
   User.init({
     firstName: {
       type: Sequelize.STRING,
-      unique: true,
       allowNull: false,
       validate: {
         notNull: {
@@ -31,6 +30,7 @@ module.exports = (sequelize) => {
     },
     emailAddress: {
       type: Sequelize.STRING,
+      unique: true,
       allowNull: false,
       validate: {
         notNull: {
@@ -53,10 +53,6 @@ module.exports = (sequelize) => {
         }, 
         notEmpty: {
           msg: 'password is required'
-        },
-        len: {
-          args: [6,18],
-          msg: 'Password must be at least 6 characters long'
         }
       }
     },
