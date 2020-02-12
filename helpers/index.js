@@ -8,7 +8,7 @@ function asyncHandler(cb) {
     try {
       await cb(req, res, next)
     } catch (err) {
-      // Handle general error.  Sequelize errors also passed through here
+      // Handle general error.  SequelizeValidation errors also passed through here
       next(err) 
     }
   }
@@ -50,29 +50,8 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-const doesUserExist = async (user) => {
-  const result = await User.findOne({ 
-    where: { 
-      emailAddress: user.emailAddress 
-    } 
-  });
-
-  return result ? true : false;
-}
-
-const doesCourseExist = async (course) => {
-  const result = await Course.findOne({ 
-    where: { 
-      title: course.title 
-    } 
-  });
-
-  return result ? true : false;
-}
 
 module.exports = {
   asyncHandler,
-  authenticateUser,
-  doesUserExist,
-  doesCourseExist
+  authenticateUser
 }

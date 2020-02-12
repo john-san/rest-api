@@ -1,9 +1,10 @@
 'use strict';
 
+// load modules, models, helpers, & validators
 const express = require('express');
 const bcryptjs = require('bcryptjs');
-const { sequelize, Course, User } = require('../models');
-const { asyncHandler, authenticateUser, doesUserExist, doesCourseExist } = require('../helpers/index');
+const { Course, User } = require('../models');
+const { asyncHandler, authenticateUser } = require('../helpers/index');
 const { userValidationRules, courseValidationRules, validate } = require('../helpers/validator');
 
 // Construct a router instance.
@@ -18,16 +19,9 @@ router.get('/users', authenticateUser, (req, res) => {
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 router.post('/users', userValidationRules(), validate, asyncHandler(async (req, res) => {
   const user = req.body;
-  const exists = await doesUserExist(req.body);
-
-  // if user exists, give error.  otherwise, create user
-  if (exists) {
-    return res.status(409).json({ error: `A user with the email ${user.emailAddress} already exists.` });
-  } else {
-    user.password = bcryptjs.hashSync(user.password);
-    await User.create(user);
-    return res.status(201).location('/').end();
-  }
+  user.password = bcryptjs.hashSync(user.password);
+  await User.create(user);
+  return res.status(201).location('/').end();
 }));
 
 // GET /api/courses 200 - Returns a list of courses (including the user that owns each course)
@@ -77,16 +71,8 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
 router.post('/courses/', authenticateUser, courseValidationRules(), validate, asyncHandler(async (req, res) => {
-  const course = req.body;
-  const exists = await doesCourseExist(course);
-  
-  // if course exists, give error.  otherwise, create user
-  if (exists) {
-    return res.status(409).json({ error: `The course titled "${course.title}" already exists.` });
-  } else {
-    const newCourse = await Course.create(course);
-    return res.status(201).location(`/courses/${newCourse.id}`).end();
-  }
+  const newCourse = await Course.create(req.body);
+  return res.status(201).location(`/courses/${newCourse.id}`).end();
 }));
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
