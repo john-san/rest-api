@@ -1,11 +1,10 @@
 'use strict';
 
-// load modules, models, helpers, & validators
+// load modules, models, helpers
 const express = require('express');
 const bcryptjs = require('bcryptjs');
 const { Course, User } = require('../models');
-const { asyncHandler, authenticateUser } = require('../helpers/index');
-const { userValidationRules, courseValidationRules, validate } = require('../helpers/validator');
+const { asyncHandler, authenticateUser, userValidationRules, courseValidationRules, validate } = require('../helpers');
 
 // Construct a router instance.
 const router = express.Router();
