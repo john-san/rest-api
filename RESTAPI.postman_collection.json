@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5294d7ed-2b6c-4b28-91be-8b4a78b5b61d",
+		"_postman_id": "8977c25c-28d6-4f46-900f-5c152860a470",
 		"name": "FSJS Techdegree: REST API Project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -251,7 +251,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{}"
+					"raw": "{\n\n}"
 				},
 				"url": {
 					"raw": "localhost:5000/api/courses",
@@ -414,7 +414,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\": 1,\n    \"title\": \"New Course Updated Again Hello\",\n    \"description\": \"My course description. And again.\",\n    \"userId\": 1\n}"
+					"raw": "{\n\t\"id\": 5,\n    \"title\": \"New Course Updated Again Hello\",\n    \"description\": \"My course description. And again.\",\n    \"userId\": 1\n}"
 				},
 				"url": {
 					"raw": "localhost:5000/api/courses/1",
@@ -425,6 +425,303 @@
 					"path": [
 						"api",
 						"courses",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (No Auth, Incomplete Data)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/courses/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"courses",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Incomplete Data)",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/courses/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"courses",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Minimum Data)",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n    \"firstName\": \"Tester\",\n    \"lastName\": \"Bob\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Minimum Data + Email)",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n    \"firstName\": \"Tester\",\n    \"lastName\": \"Bob\",\n    \"emailAddress\": \"john@smith.com\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Minimum Data + Email) Undo",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n    \"firstName\": \"Tester\",\n    \"lastName\": \"Bob\",\n    \"emailAddress\": \"joe@smith.com\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Minimum Data + PW)",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n    \"firstName\": \"Tester\",\n    \"lastName\": \"Bob\",\n    \"password\": \"joepassword1\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Minimum Data + PW) Undo",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword1",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n    \"firstName\": \"Tester\",\n    \"lastName\": \"Bob\",\n    \"password\": \"joepassword\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
 						"1"
 					]
 				}
@@ -498,6 +795,75 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete User (No Auth)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Course (With Auth) Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "joepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "joe@smith.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "localhost:5000/api/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

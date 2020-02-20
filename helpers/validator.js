@@ -26,6 +26,26 @@ const userValidationRules = () => {
   ];
 }
 
+const userUpdateValidationRules = () => {
+  return [
+    check('firstName')
+      .exists({ checkNull: true, checkFalsy: true })
+      .withMessage('Please provide a value for "firstName"'),
+    check('lastName')
+      .exists({ checkNull: true, checkFalsy: true })
+      .withMessage('Please provide a value for "lastName"'),
+    check('emailAddress')
+      .optional()
+      .isEmail()
+      .withMessage('Please provide a valid email address')
+      .custom(checkIfEmailExists),
+    check('password')
+      .optional()
+      .isLength({ min: 6, max: 18 })
+      .withMessage('Password must be between 6 and 18 characters'),
+  ];
+}
+
 const courseValidationRules = () => {
   return [
     check('title')
@@ -75,6 +95,7 @@ const checkIfCourseExists = async (val) => {
 
 module.exports = {
   userValidationRules,
+  userUpdateValidationRules,
   courseValidationRules,
   validate
 };
